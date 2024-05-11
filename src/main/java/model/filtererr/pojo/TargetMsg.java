@@ -12,7 +12,16 @@ public class TargetMsg {
     private String mainplat;
     private String origin_ip;
     private long run_time;
+    private String game;
 
+
+    public String getGame() {
+        return game;
+    }
+
+    public void setGame(String game) {
+        this.game = game;
+    }
 
     public int getErr_id() {
         return err_id;

@@ -55,21 +55,17 @@ server:
   port: 8822
 
 listening_path:
-  /data/web/uploadFile/dgslg/mix_cn,
-  /data/web/uploadFile/dgslg/android_cn,
-  /data/web/uploadFile/dgslg/mix_globalts,
-  /data/web/uploadFile/dgslg/mix_global,
-  /data/web/uploadFile/dgslg/mix_cnts
+  /data/web/uploadFile/ues1/android_cn
 
 regular_expression:
   ^dgslg\S+\_error\_msg\.dat\.zip
 
 origin_ip:
-  101.32.11.14
+  121.201.56.22
 
 err_type:
   SYS_ERROR,
-  ERROR,
+  Error,
   SYS_EXCEPT
 
 mybatis:

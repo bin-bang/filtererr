@@ -125,11 +125,16 @@ public class CnDataSourceConfig {
     }
 
     @Bean(name="cnSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("cnDataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResource("classpath:mybatis/mapper/cnmapper/CnMapper.xml"));
-        return sessionFactoryBean.getObject();
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("cnDataSource") DataSource dataSource) {
+        try {
+            SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResource("classpath:mybatis/mapper/cnmapper/CnMapper.xml"));
+            return sessionFactoryBean.getObject();
+        }catch (Exception e){
+
+        }
+       return null;
     }
 }

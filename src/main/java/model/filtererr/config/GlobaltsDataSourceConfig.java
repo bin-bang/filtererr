@@ -129,10 +129,15 @@ public class GlobaltsDataSourceConfig {
 
     @Bean(name="globaltsSqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("globaltsDataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResource("classpath:mybatis/mapper/globaltsmapper/GlobaltsMapper.xml"));
-        return sessionFactoryBean.getObject();
+        try {
+            SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResource("classpath:mybatis/mapper/globaltsmapper/GlobaltsMapper.xml"));
+            return sessionFactoryBean.getObject();
+        }catch (Exception e){
+
+        }
+        return null;
     }
 }

@@ -12,7 +12,8 @@ public interface TargetMapper {
 
     TargetMsg queryTarget(@Param("err_title") String err_title,
                     @Param("mainplat") String mainplat,
-                    @Param("origin_ip") String origin_ip);
+                    @Param("origin_ip") String origin_ip,
+                      @Param("game") String game);
 
     int updateTarget(TargetMsg targetMsg);
 

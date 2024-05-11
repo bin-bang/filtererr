@@ -9,6 +9,7 @@ import model.filtererr.mapper.targetmapper.TargetMapper;
 import model.filtererr.pojo.TargetMsg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
 
 
 import javax.annotation.Resource;
@@ -46,9 +47,9 @@ public class TestService {
     @Value("${err_type}")
     private String[] err_type;
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 
     @Value("${origin_ip}")
     private String origin_ip;
@@ -68,7 +69,7 @@ public class TestService {
             return false;
         }
         for (String s: err_type) {
-            if (line.contains("["+s+"]")){
+            if (line.contains(s+":")){
                 return true;
             }
         }
@@ -82,10 +83,10 @@ public class TestService {
         if(line==null) {
             return false;
         }
-        if (line.length() < 10) {
+        if (line.length() < 12) {
             return false;
         }
-        String temp = line.substring(0, 10);
+        String temp = line.substring(2, 12);
         dateFormat.setLenient(false);
 
         try {
@@ -133,10 +134,11 @@ public class TestService {
         String separator = "[/\\\\]";
         String[] mainplats = path.split(separator);
         String mainplat = mainplats[mainplats.length - 2];
+        String game =  mainplats[mainplats.length - 3];
         TargetMsg targetMsg = new TargetMsg();
 
 
-        if (mainplat.equals("mix_cn") || mainplat.equals("mix_cnts")) {
+        /*if (mainplat.equals("mix_cn") || mainplat.equals("mix_cnts")) {
             Integer temp = cnMapper.queryErrId(fileName);
             if (temp == null) {
                 targetMsg.setErr_id(0);
@@ -167,9 +169,9 @@ public class TestService {
             } else {
                 targetMsg.setErr_id(temp);
             }
-        }
+        }*/
 
-
+        targetMsg.setGame(StringUtils.capitalize(game));
         targetMsg.setErr_title(title);
         targetMsg.setErr_detail("");
         if (map.containsKey(title)) {
@@ -179,7 +181,7 @@ public class TestService {
         }
         targetMsg.setErr_last_file(fileName);
         try {
-            targetMsg.setErr_last_time(formatter.parse(line.substring(0, 19)).getTime() / 1000);
+            targetMsg.setErr_last_time(formatter.parse(line.substring(2, 21)).getTime() / 1000);
             targetMsg.setMainplat(mainplat);
             targetMsg.setOrigin_ip(origin_ip);
             targetMsg.setRun_time(System.currentTimeMillis() / 1000);
@@ -190,15 +192,18 @@ public class TestService {
     }
 
     //将错误信息更新到数据库到数据库
-    private void addErrService(Map<String, TargetMsg> map) {
+    private void addErrService(Map<String, TargetMsg> map) throws Exception{
         if (map == null) {
             return;
         }
         for (Map.Entry<String, TargetMsg> entry : map.entrySet()) {
-            TargetMsg err = targetMapper.queryTarget(entry.getKey(), entry.getValue().getMainplat(), entry.getValue().getOrigin_ip());
+            String separator = "[/\\\\]";
+            String[] games = path.split(separator);
+            String game = StringUtils.capitalize(games[games.length - 2]);
+            TargetMsg err = targetMapper.queryTarget(entry.getKey(), entry.getValue().getMainplat(), entry.getValue().getOrigin_ip(),game);
             if (err != null) {
                 err.setErr_count(err.getErr_count() + entry.getValue().getErr_count());
-                if ("mix_cn".equals(entry.getValue().getMainplat()) || "mix_cnts".equals(entry.getValue().getMainplat())) {
+               /* if ("mix_cn".equals(entry.getValue().getMainplat()) || "mix_cnts".equals(entry.getValue().getMainplat())) {
                     Integer temp = cnMapper.queryErrId(entry.getValue().getErr_last_file());
                     if (temp == null) {
                         err.setErr_id(0);
@@ -229,13 +234,14 @@ public class TestService {
                     } else {
                         err.setErr_id(temp);
                     }
-                }
+                }*/
                 err.setErr_detail(entry.getValue().getErr_detail());
                 err.setErr_last_file(entry.getValue().getErr_last_file());
                 if (err.getErr_last_time() < (entry.getValue().getErr_last_time())) {
                     err.setErr_last_time(entry.getValue().getErr_last_time());
                 }
                 err.setRun_time(System.currentTimeMillis() / 1000);
+                err.setGame(game);
                 targetMapper.updateTarget(err);
             } else {
                 targetMapper.addTarget(entry.getValue());
@@ -300,57 +306,57 @@ public class TestService {
         threadLocal.set(new ConcurrentHashMap<>());
         Map<String,TargetMsg> targetMsgMap =threadLocal.get();
         log.info("新增文件"+ file.getName());
-        if (!(file.getName().endsWith(".zip"))) {
+        /*if (!(file.getName().endsWith(".zip"))) {
             log.info(file.getName() + "不是压缩文件");
             return;
-        }
+        }*/
 
-        for (int i = 0; i < patterns.length; i++) {
-            if (Pattern.matches(patterns[i], file.getName())) {
-                break;
-            } else if (i == patterns.length - 1) {
-                log.info(file.getName() + "不是错误文件");
-                return;
-            }
-        }
+//        for (int i = 0; i < patterns.length; i++) {
+//            if (Pattern.matches(patterns[i], file.getName())) {
+//                break;
+//            } else if (i == patterns.length - 1) {
+//                log.info(file.getName() + "不是错误文件");
+//                return;
+//            }
+//        }
 
-        try (ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+        try (FileInputStream  inputStream = new FileInputStream (file)) {
 
-            while ((zipInputStream.getNextEntry()) != null) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(zipInputStream));
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (isTime(line)) {
-                        if (isErr(line)) {
-                            for (String s: err_type) {
-                                if (line.contains(s)){
-                                    index=line.indexOf(s)+s.length()+2;
-                                    break;
-                                }
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (isTime(line)) {
+                    if (isErr(line)) {
+                        for (String s: err_type) {
+                            if (line.contains(s)){
+                                index=line.indexOf(s)+s.length()+2;
+                                break;
                             }
-                            if(line.length()<=index || index<0){
-                                    continue;
-                            }
-                            title = line.substring(index);
-                            isWirte = true;
-                            statistics(targetMsgMap, line, file.getName(), file.getPath());
-                        } else {
-                            isWirte = false;
                         }
+                        if(line.length()<=index || index<0){
+                            continue;
+                        }
+                        title = line.substring(index);
+                        isWirte = true;
+                        statistics(targetMsgMap, line, file.getName(), file.getPath());
+                    } else {
+                        isWirte = false;
                     }
+                }
 
-                    if (isWirte) {
-                        if (targetMsgMap.containsKey(title)) {
-                            TargetMsg temp = targetMsgMap.get(title);
-                            temp.setErr_detail(temp.getErr_detail() + line + "\n");
-                            targetMsgMap.put(title, temp);
-                        }
+                if (isWirte) {
+                    if (targetMsgMap.containsKey(title)) {
+                        TargetMsg temp = targetMsgMap.get(title);
+                        temp.setErr_detail(temp.getErr_detail() + line + "\n");
+                        targetMsgMap.put(title, temp);
                     }
                 }
             }
             addErrService(targetMsgMap);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         log.info("处理完成");

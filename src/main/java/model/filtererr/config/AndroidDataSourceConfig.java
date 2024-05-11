@@ -129,10 +129,15 @@ public class AndroidDataSourceConfig {
 
     @Bean(name="AndroidSqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("AndroidDataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResource("classpath:mybatis/mapper/androidmapper/AndroidMapper.xml"));
-        return sessionFactoryBean.getObject();
+        try {
+            SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResource("classpath:mybatis/mapper/androidmapper/AndroidMapper.xml"));
+            return sessionFactoryBean.getObject();
+        }catch (Exception e){
+
+        }
+        return null;
     }
 }

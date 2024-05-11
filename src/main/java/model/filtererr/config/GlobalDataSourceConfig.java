@@ -127,10 +127,15 @@ public class GlobalDataSourceConfig {
 
     @Bean(name="globalSqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("globalDataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResource("classpath:mybatis/mapper/globalmapper/GlobalMapper.xml"));
-        return sessionFactoryBean.getObject();
+        try {
+            SqlSessionFactoryBean sessionFactoryBean=new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResource("classpath:mybatis/mapper/globalmapper/GlobalMapper.xml"));
+            return sessionFactoryBean.getObject();
+        }catch (Exception e){
+
+        }
+        return null;
     }
 }

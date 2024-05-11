@@ -28,7 +28,7 @@ public class FileListener implements FileAlterationListener {
     public void onStart(FileAlterationObserver fileAlterationObserver) {
         File directory = fileAlterationObserver.getDirectory();
         log.info("开始监听" + directory);
-        testService.updateDelay();
+        //testService.updateDelay();
     }
 
     @Override

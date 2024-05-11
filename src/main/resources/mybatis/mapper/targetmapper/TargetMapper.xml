@@ -5,7 +5,7 @@
 <mapper namespace="model.filtererr.mapper.targetmapper.TargetMapper">
 
     <insert id="addTarget" parameterType="model.filtererr.pojo.TargetMsg">
-    insert into DgslgMineDB.tblFilterErr(err_id,err_title,err_detail,
+    insert into ${game}MineDB.tblFilterErr(err_id,err_title,err_detail,
                 err_count,err_last_file,err_last_time,mainplat,origin_ip,run_time)
     values(#{err_id},#{err_title},#{err_detail},#{err_count},#{err_last_file},
             #{err_last_time},#{mainplat},#{origin_ip},#{run_time});
@@ -14,14 +14,14 @@
     <select id="queryTarget" resultType="model.filtererr.pojo.TargetMsg">
         select err_id,err_title,err_detail,err_count,
                 err_last_file,err_last_time,mainplat,origin_ip,run_time
-        from DgslgMineDB.tblFilterErr
+        from ${game}MineDB.tblFilterErr
         where err_title=#{err_title}
         and mainplat=#{mainplat}
         and origin_ip=#{origin_ip}
     </select>
     
     <update id="updateTarget" parameterType="model.filtererr.pojo.TargetMsg">
-        update DgslgMineDB.tblFilterErr
+        update ${game}MineDB.tblFilterErr
         set err_id=#{err_id},err_detail=#{err_detail},err_count=#{err_count},
             err_last_file=#{err_last_file},err_last_time=#{err_last_time},run_time=#{run_time}
         where err_title=#{err_title}
@@ -32,7 +32,7 @@
     <select id="queryErrZero" resultType="model.filtererr.pojo.TargetMsg">
         select err_id,err_title,err_detail,err_count,
                 err_last_file,err_last_time,mainplat,origin_ip,run_time
-        from DgslgMineDB.tblFilterErr
+        from ${game}MineDB.tblFilterErr
         where err_id=#{err_id}
         and run_time>=#{run_time}
     </select>
@@ -40,7 +40,7 @@
     <select id="queryFile" resultType="model.filtererr.pojo.TargetMsg">
         select err_id,err_title,err_detail,err_count,
                 err_last_file,err_last_time,mainplat,origin_ip,run_time
-        from DgslgMineDB.tblFilterErr
+        from ${game}MineDB.tblFilterErr
         where err_last_file=#{file_name}
         limit 1;
     </select>
