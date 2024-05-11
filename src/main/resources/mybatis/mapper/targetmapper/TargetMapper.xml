@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="model.filtererr.mapper.targetmapper.TargetMapper">
+
+    <insert id="addTarget" parameterType="model.filtererr.pojo.TargetMsg">
+    insert into DgslgMineDB.tblFilterErr(err_id,err_title,err_detail,
+                err_count,err_last_file,err_last_time,mainplat,origin_ip,run_time)
+    values(#{err_id},#{err_title},#{err_detail},#{err_count},#{err_last_file},
+            #{err_last_time},#{mainplat},#{origin_ip},#{run_time});
+    </insert>
+
+    <select id="queryTarget" resultType="model.filtererr.pojo.TargetMsg">
+        select err_id,err_title,err_detail,err_count,
+                err_last_file,err_last_time,mainplat,origin_ip,run_time
+        from DgslgMineDB.tblFilterErr
+        where err_title=#{err_title}
+        and mainplat=#{mainplat}
+        and origin_ip=#{origin_ip}
+    </select>
+    
+    <update id="updateTarget" parameterType="model.filtererr.pojo.TargetMsg">
+        update DgslgMineDB.tblFilterErr
+        set err_id=#{err_id},err_detail=#{err_detail},err_count=#{err_count},
+            err_last_file=#{err_last_file},err_last_time=#{err_last_time},run_time=#{run_time}
+        where err_title=#{err_title}
+        and mainplat=#{mainplat}
+        and origin_ip=#{origin_ip}
+    </update>
+
+    <select id="queryErrZero" resultType="model.filtererr.pojo.TargetMsg">
+        select err_id,err_title,err_detail,err_count,
+                err_last_file,err_last_time,mainplat,origin_ip,run_time
+        from DgslgMineDB.tblFilterErr
+        where err_id=#{err_id}
+        and run_time>=#{run_time}
+    </select>
+
+    <select id="queryFile" resultType="model.filtererr.pojo.TargetMsg">
+        select err_id,err_title,err_detail,err_count,
+                err_last_file,err_last_time,mainplat,origin_ip,run_time
+        from DgslgMineDB.tblFilterErr
+        where err_last_file=#{file_name}
+        limit 1;
+    </select>
+
+</mapper>

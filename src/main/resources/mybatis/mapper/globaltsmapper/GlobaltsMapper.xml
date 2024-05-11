@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="model.filtererr.mapper.globaltsmapper.GlobaltsMapper">
+
+    <select id="queryErrId" resultType="java.lang.Integer">
+        select id
+        from tbllog_error
+        where file_name=#{err_last_file}
+        limit 1
+    </select>
+
+</mapper>
