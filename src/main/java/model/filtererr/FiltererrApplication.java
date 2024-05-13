@@ -17,13 +17,16 @@ public class FiltererrApplication {
     @Value("${listening_path}")
     private String[] listening_path;
 
+    @Value("${defaultInterval}")
+    private long defaultInterval;
+
     public static void main(String[] args) {
         SpringApplication.run(FiltererrApplication.class,args);
     }
 
     @Bean
     public FileMonitor fileMonitor(){
-        return new FileMonitor(listening_path);
+        return new FileMonitor(listening_path,defaultInterval);
     }
 
 }

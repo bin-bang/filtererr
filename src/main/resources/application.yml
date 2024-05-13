@@ -68,5 +68,9 @@ err_type:
   Error,
   SYS_EXCEPT
 
+#监听间隔
+defaultInterval:
+  300000
+
 mybatis:
   type-aliases-package: model.filtererr.pojo

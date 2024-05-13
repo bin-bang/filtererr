@@ -3,13 +3,15 @@ package model.filtererr.Monitor;
 import model.filtererr.Listener.FileListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.springframework.beans.factory.annotation.Value;
 
 public class FileMonitor {
     private FileListener fileListener;  //监听事件
     private String[] paths;    //监听的文件路径
     private FileAlterationMonitor monitor;
 
-    private long defaultInterval=1000*60*5;  //默认监听的时间间隔
+    @Value("${defaultInterval}")
+    private long defaultInterval=5*60*1000;  //默认监听的时间间隔
     public FileMonitor() {
     }
 

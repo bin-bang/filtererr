@@ -86,7 +86,7 @@ public class TestService {
         if (line.length() < 12) {
             return false;
         }
-        String temp = line.substring(2, 12);
+        String temp = line.substring(1, 11);
         dateFormat.setLenient(false);
 
         try {
@@ -181,7 +181,8 @@ public class TestService {
         }
         targetMsg.setErr_last_file(fileName);
         try {
-            targetMsg.setErr_last_time(formatter.parse(line.substring(2, 21)).getTime() / 1000);
+            String tttt=line.substring(1, 20);
+            targetMsg.setErr_last_time(formatter.parse(line.substring(1, 20)).getTime() / 1000);
             targetMsg.setMainplat(mainplat);
             targetMsg.setOrigin_ip(origin_ip);
             targetMsg.setRun_time(System.currentTimeMillis() / 1000);
